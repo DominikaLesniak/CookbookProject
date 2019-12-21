@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -24,15 +25,25 @@ public class RecipeService {
                 .books(Collections.singletonList(user.getBook()))
                 .name(name)
                 .text(text)
-                .owner(user)
+                .author(user)
                 .build();
-        Recipe save = recipeRepository.save(recipe);
+        Recipe savedRecipe = recipeRepository.save(recipe);
         ingredients.forEach((ingredientName, amount) -> {
             Ingredient ingredientByName = ingredientService.getIngredientByName(ingredientName);
-            RecipeIngredient recipeIngredient = new RecipeIngredient(ingredientByName, save, amount);
+            RecipeIngredient recipeIngredient = new RecipeIngredient(ingredientByName, savedRecipe, amount);
             recipeIngredientRepository.save(recipeIngredient);
         });
         recipeRepository.flush();
         recipeIngredientRepository.flush();
+    }
+
+    public Recipe getRecipeById(long id) {
+        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+        return recipeOptional.orElse(null);
+    }
+
+    public void deleteRecipe(long id) {
+        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+        recipeOptional.ifPresent(recipeRepository::delete);
     }
 }

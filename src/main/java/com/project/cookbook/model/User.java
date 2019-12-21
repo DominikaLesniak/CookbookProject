@@ -1,9 +1,6 @@
 package com.project.cookbook.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +27,11 @@ public class User {
     @Column(name = "USR_POINTS")
     private long points;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "author")
     private List<Recipe> ownedRecipes;
+
+    @OneToMany(mappedBy = "author")
+    private List<Rating> ratings;
 
     @OneToOne(mappedBy = "user")
     private Book book;

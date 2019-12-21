@@ -1,9 +1,6 @@
 package com.project.cookbook.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +20,9 @@ public class Recipe {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RCP_USER_ID", referencedColumnName = "USR_ID")
-    private User owner;
+    private User author;
 
-    @Column(name = "RCP_TITLE")
+    @Column(name = "RCP_TITLE", nullable = false)
     private String name;
 
     @Column(name = "RCP_TEXT")

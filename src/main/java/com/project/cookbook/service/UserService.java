@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.management.BadAttributeValueExpException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +25,11 @@ public class UserService {
                 .points(0)
                 .build();
         userRepository.save(user);
+    }
+
+    public User getUserById(long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.orElse(null);
     }
 
     private boolean isUsernameTaken(String username) {
