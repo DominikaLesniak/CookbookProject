@@ -1,6 +1,5 @@
 package com.project.cookbook.model;
 
-import com.project.cookbook.constants.IngredientType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +22,7 @@ public class Ingredient {
     private String name;
 
     @Column(name = "ING_TYPE")
-    private IngredientType type;
+    private String type;
 
     @OneToMany(mappedBy = "ingredient")
     private Set<RecipeIngredient> recipes;
