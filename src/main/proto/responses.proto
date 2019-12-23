@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+option java_outer_classname = "Requests";
+option java_package = "com.project.cookbook";
+
+message Ingredient {
+}
