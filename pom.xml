@@ -110,7 +110,7 @@
                             <goal>test-compile</goal>
                         </goals>
                         <configuration>
-                            <protocArtifact>com.google.protobuf:protoc:3.8.0:exe:${os.detected.classifier}
+                            <protocArtifact>com.google.protobuf:protoc:3.11.1:exe:${os.detected.classifier}
                             </protocArtifact>
                         </configuration>
                     </execution>

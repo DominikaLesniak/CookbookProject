@@ -1,10 +1,12 @@
 package com.project.cookbook.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
 @Table(name = "RECIPES_INGREDIENTS")
 @IdClass(RecipesIngredientId.class)

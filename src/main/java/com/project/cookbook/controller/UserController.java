@@ -1,10 +1,9 @@
 package com.project.cookbook.controller;
 
+import com.project.cookbook.model.User;
 import com.project.cookbook.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.management.BadAttributeValueExpException;
 
@@ -13,12 +12,17 @@ import javax.management.BadAttributeValueExpException;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping(name = "/user")
+    @PostMapping(value = "/user")
     public void createUser(@RequestParam String username, @RequestParam String email) {
         try {
             userService.createUser(username, email);
         } catch (BadAttributeValueExpException e) {
             e.printStackTrace();
         }
+    }
+
+    @GetMapping(value = "user/{id}")
+    public User getUserById(@PathVariable long id) {
+        return userService.getUserById(id);
     }
 }

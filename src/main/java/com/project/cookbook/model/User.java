@@ -35,4 +35,8 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Book book;
+
+    public void addPoints(long points) {
+        this.points += points;
+    }
 }

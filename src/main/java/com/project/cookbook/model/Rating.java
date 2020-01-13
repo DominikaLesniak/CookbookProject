@@ -26,4 +26,8 @@ public class Rating {
 
     @Column(name = "RT_COMMENT")
     private String comment;
+
+    @ManyToOne
+    @JoinColumn(name = "RT_RECIPE", referencedColumnName = "RCP_ID")
+    private Recipe recipe;
 }

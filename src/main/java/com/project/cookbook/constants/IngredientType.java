@@ -6,5 +6,7 @@ public enum IngredientType {
     FRUIT,
     DAIRY,
     GRAIN,
+    VEGETABLE_OIL,
+    OTHER_ANIMAL_PRODUCT,
     OTHER
 }

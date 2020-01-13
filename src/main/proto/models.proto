@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+option java_outer_classname = "GeneratedModels";
+option java_package = "com.project.cookbook";
+
+message Ingredient {
+    string name = 1;
+    string type = 3;
+}
+
+message RecipeSchema {
+    int64 authorId = 1;
+    string name = 2;
+    string text = 3;
+    string imageUrl = 4;
+    repeated Ingredient ingredients = 5;
+
+    message Ingredient {
+        string name = 1;
+        string amount = 2;
+    }
+}
+
+message UserSchema {
+    int64 id = 1;
+    string username = 2;
+    string email = 3;
+    int64 points = 4;
+    int32 ownedRecipeNumber = 5;
+    int32 ratingsNumber = 6;
+}
+
+message IngredientsResponse {
+    repeated Ingredient ingredients = 1;
+}
+
+message RecipeResponse {
+    repeated RecipeSchema recipes = 1;
+}
+
+message Rating {
+    int32 rate = 1;
+    string comment = 2;
+    int64 authorId = 3;
+    int64 recipeId = 4;
+}
+
+message RatingsResponse {
+    repeated Rating ratings = 1;
+}

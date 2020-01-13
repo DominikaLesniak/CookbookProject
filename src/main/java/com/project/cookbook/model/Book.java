@@ -27,4 +27,12 @@ public class Book {
             joinColumns = @JoinColumn(name = "BR_BOOK_ID"),
             inverseJoinColumns = @JoinColumn(name = "BR_RECIPE_ID"))
     private List<Recipe> recipes;
+
+    public void addRecipe(Recipe recipe) {
+        recipes.add(recipe);
+    }
+
+    public void removeRecipe(Recipe recipe) {
+        recipes.remove(recipe);
+    }
 }

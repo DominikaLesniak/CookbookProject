@@ -28,6 +28,9 @@ public class Recipe {
     @Column(name = "RCP_TEXT")
     private String text;
 
+    @Column(name = "RCP_IMAGE_URL")
+    private String imageUrl;
+
     @ManyToMany(mappedBy = "recipes")
     private List<Book> books;
 
