@@ -1,7 +1,9 @@
 package com.project.cookbook.controller;
 
-import com.project.cookbook.model.User;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.project.cookbook.GeneratedModels;
 import com.project.cookbook.service.UserService;
+import com.project.cookbook.utils.InOutService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +24,18 @@ public class UserController {
     }
 
     @GetMapping(value = "user/{id}")
-    public User getUserById(@PathVariable long id) {
-        return userService.getUserById(id);
+    public String getUserProfile(@PathVariable long id) {
+        GeneratedModels.UserSchema userProfile = userService.getUserProfile(id);
+        try {
+            return InOutService.write(userProfile);
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @DeleteMapping(value = "user/{id}")
+    public void deleteUserById(@PathVariable long id) {
+        userService.deleteUserById(id);
     }
 }

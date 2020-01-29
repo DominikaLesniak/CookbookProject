@@ -1,5 +1,7 @@
 package com.project.cookbook.service;
 
+import com.project.cookbook.GeneratedModels;
+import com.project.cookbook.converter.UserConverter;
 import com.project.cookbook.exception.UserNotFoundException;
 import com.project.cookbook.model.Book;
 import com.project.cookbook.model.User;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final RecipeService recipeService;
 
     public void createUser(String username, String email) throws BadAttributeValueExpException {
         if (isUsernameTaken(username)) {
@@ -36,6 +39,29 @@ public class UserService {
     public User getUserById(long id) {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    public GeneratedModels.UserSchema getUserProfile(long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        User user = userOptional
+                .orElseThrow(() -> new UserNotFoundException(id));
+        return UserConverter.convert(user);
+    }
+
+    public void deleteUserById(long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        User user = userOptional.orElseThrow(() -> new UserNotFoundException(id));
+        userRepository.delete(user);
+    }
+
+    public void updateUserPoints(long id, long pointsAmount) {
+        User user = getUserById(id);
+        updateUserPoints(user, pointsAmount);
+    }
+
+    public void updateUserPoints(User user, long pointsAmount) {
+        user.addPoints(pointsAmount);
+        userRepository.saveAndFlush(user);
     }
 
     private boolean isUsernameTaken(String username) {

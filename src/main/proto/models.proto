@@ -47,4 +47,5 @@ message Rating {
 
 message RatingsResponse {
     repeated Rating ratings = 1;
+    string averageRating = 2;
 }
