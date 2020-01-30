@@ -8,6 +8,10 @@ message Ingredient {
     string type = 3;
 }
 
+message IngredientsResponse {
+    repeated Ingredient ingredients = 1;
+}
+
 message RecipeSchema {
     int64 authorId = 1;
     string name = 2;
@@ -21,6 +25,10 @@ message RecipeSchema {
     }
 }
 
+message RecipeResponse {
+    repeated RecipeSchema recipes = 1;
+}
+
 message UserSchema {
     int64 id = 1;
     string username = 2;
@@ -30,12 +38,8 @@ message UserSchema {
     int32 ratingsNumber = 6;
 }
 
-message IngredientsResponse {
-    repeated Ingredient ingredients = 1;
-}
-
-message RecipeResponse {
-    repeated RecipeSchema recipes = 1;
+message UsersResponse {
+    repeated UserSchema users = 1;
 }
 
 message Rating {

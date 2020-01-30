@@ -58,8 +58,8 @@ public class AuthorizationService {
         }
 
         String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
-        PermissionLevel permissionLevel = permissionLevelRepository.findByUserType(UserType.USER)
-                .orElseThrow(() -> new PermissionLevelNotFoundException(UserType.USER));
+        PermissionLevel permissionLevel = permissionLevelRepository.findByUserType(UserType.ROLE_USER)
+                .orElseThrow(() -> new PermissionLevelNotFoundException(UserType.ROLE_USER));
         Book book = new Book();
         User user = User.builder()
                 .username(signUpRequest.getUsername())

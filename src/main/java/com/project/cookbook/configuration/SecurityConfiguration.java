@@ -77,16 +77,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/**/*.jpg",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js")
+                        "/**/*.js").permitAll()
+                .antMatchers("/authorization/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/ingredient", "/user/**", "/book/**", "**/rating", "/ranking/**", "/recipe**")
                 .permitAll()
-                .antMatchers("/authorization/**")
-                .permitAll()
-                .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
-                .permitAll()
-                .antMatchers(HttpMethod.GET, "/api/polls/**", "/api/users/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+                .anyRequest().authenticated();
 
         // Add our custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

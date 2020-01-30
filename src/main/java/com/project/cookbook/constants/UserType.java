@@ -1,6 +1,6 @@
 package com.project.cookbook.constants;
 
 public enum UserType {
-    ADMIN,
-    USER
+    ROLE_ADMIN,
+    ROLE_USER
 }

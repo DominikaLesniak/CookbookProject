@@ -5,6 +5,8 @@ import com.project.cookbook.constants.PointedActions;
 import com.project.cookbook.converter.RatingConverter;
 import com.project.cookbook.exception.RatingNotFoundException;
 import com.project.cookbook.exception.RecipeNotFoundException;
+import com.project.cookbook.exception.WrongUserException;
+import com.project.cookbook.model.PrincipalUser;
 import com.project.cookbook.model.Rating;
 import com.project.cookbook.model.Recipe;
 import com.project.cookbook.model.User;
@@ -68,12 +70,14 @@ public class RatingService {
         ratingRepository.saveAndFlush(rating);
     }
 
-    public void deleteRating(long ratingId, long userId) {
+    public void deleteRating(long ratingId, PrincipalUser principalUser) {
         Rating rating = getRating(ratingId);
-        if (rating.getAuthor().getId() == userId) {
+        if (rating.getAuthor().getId() == principalUser.getId() || principalUser.isAdmin()) {
             PointedActions actions = rating.getComment().isBlank() ? PointedActions.ADD_RATING : PointedActions.ADD_COMMENT;
-            userService.updateUserPoints(userId, actions.getPoints());
+            userService.updateUserPoints(principalUser.getUser(), actions.getPoints());
             ratingRepository.delete(rating);
+        } else {
+            throw new WrongUserException(principalUser.getId(), rating.getAuthor().getId());
         }
     }
 

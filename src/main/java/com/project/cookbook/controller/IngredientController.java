@@ -6,6 +6,7 @@ import com.project.cookbook.constants.IngredientType;
 import com.project.cookbook.service.IngredientService;
 import com.project.cookbook.utils.InOutService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,12 +15,14 @@ public class IngredientController {
     private final IngredientService ingredientService;
 
     @PostMapping(value = "ingredient")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void addIngredient(@RequestParam String name,
                               @RequestParam IngredientType ingredientType) {
         ingredientService.addIngredient(name, ingredientType);
     }
 
     @PostMapping(value = "ingredient/body")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void addIngredientWithBody(@RequestBody String json) {
         try {
             GeneratedModels.Ingredient ingredient = InOutService.readMessageForType(json, GeneratedModels.Ingredient.getDefaultInstance());
@@ -48,11 +51,13 @@ public class IngredientController {
     }
 
     @DeleteMapping(value = "ingredient/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteIngredient(@PathVariable long id) {
         ingredientService.deleteIngredient(id);
     }
 
     @PutMapping(value = "ingredient/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editIngredient(@PathVariable long id,
                                  @RequestParam(required = false) String name,
                                  @RequestParam(required = false) IngredientType ingredientType) {

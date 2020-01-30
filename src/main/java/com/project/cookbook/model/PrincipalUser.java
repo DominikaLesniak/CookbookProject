@@ -1,6 +1,6 @@
 package com.project.cookbook.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.cookbook.constants.UserType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,16 +11,11 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 
 public class PrincipalUser implements UserDetails {
-    private long id;
-    private String username;
-    @JsonIgnore
-    private String password;
+    private User user;
     private Collection<? extends GrantedAuthority> authorities;
 
     public PrincipalUser(User user) {
-        id = user.getId();
-        username = user.getUsername();
-        password = user.getPassword();
+        this.user = user;
 
         List<GrantedAuthority> userAuthorities = singletonList(new SimpleGrantedAuthority(user.getPermissionLevel()
                 .getUserType().name()));
@@ -34,16 +29,20 @@ public class PrincipalUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     public long getId() {
-        return id;
+        return user.getId();
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @Override
@@ -64,5 +63,9 @@ public class PrincipalUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isAdmin() {
+        return user.getPermissionLevel().getUserType().equals(UserType.ROLE_ADMIN);
     }
 }

@@ -4,6 +4,7 @@ import com.project.cookbook.GeneratedModels;
 import com.project.cookbook.converter.RecipeConverter;
 import com.project.cookbook.exception.RecipeNotFoundException;
 import com.project.cookbook.model.Book;
+import com.project.cookbook.model.PrincipalUser;
 import com.project.cookbook.model.Recipe;
 import com.project.cookbook.model.User;
 import com.project.cookbook.repository.BookRepository;
@@ -21,9 +22,8 @@ public class BookService {
     private final RecipeRepository recipeRepository;
     private final UserService userService;
 
-    public void addRecipeToBook(long userId, long recipeId) {
-        User user = userService.getUserById(userId);
-        Book book = user.getBook();
+    public void addRecipeToBook(PrincipalUser principalUser, long recipeId) {
+        Book book = principalUser.getUser().getBook();
 
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException(recipeId));
@@ -32,9 +32,8 @@ public class BookService {
         bookRepository.saveAndFlush(book);
     }
 
-    public void removeRecipeFromBook(long userId, long recipeId) {
-        User user = userService.getUserById(userId);
-        Book book = bookRepository.findBookByUserEquals(user).get(0);
+    public void removeRecipeFromBook(PrincipalUser principalUser, long recipeId) {
+        Book book = principalUser.getUser().getBook();
 
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException(recipeId));
