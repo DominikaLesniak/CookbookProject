@@ -18,11 +18,18 @@ public class User {
     @Column(name = "USR_ID", nullable = false)
     private long id;
 
-    @Column(name = "USR_USERNAME")
+    @Column(name = "USR_USERNAME", nullable = false)
     private String username;
 
-    @Column(name = "USR_EMAIL")
+    @Column(name = "USR_EMAIL", nullable = false)
     private String email;
+
+    @Column(name = "USR_PASSWORD", nullable = false)
+    private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "USR_PERMISSION_LEVEL", referencedColumnName = "PRM_ID")
+    private PermissionLevel permissionLevel;
 
     @Column(name = "USR_POINTS")
     private long points;

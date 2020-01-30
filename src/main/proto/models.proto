@@ -49,3 +49,19 @@ message RatingsResponse {
     repeated Rating ratings = 1;
     string averageRating = 2;
 }
+
+message JwtAuthenticationResponse {
+    string accessToken = 1;
+    string tokenType = 2;
+}
+
+message LoginRequest {
+    string usernameOrEmail = 1;
+    string password = 2;
+}
+
+message SignUpRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+}

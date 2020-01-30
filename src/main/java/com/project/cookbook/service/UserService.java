@@ -18,7 +18,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-    private final RecipeService recipeService;
 
     public void createUser(String username, String email) throws BadAttributeValueExpException {
         if (isUsernameTaken(username)) {
