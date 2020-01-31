@@ -69,3 +69,10 @@ message SignUpRequest {
     string email = 2;
     string password = 3;
 }
+
+message RecipeFilters {
+    string namePattern = 1;
+    string mealType = 2;
+    repeated Ingredient ingredients = 3;
+    bool getAllIngredientsMatches = 4;
+}

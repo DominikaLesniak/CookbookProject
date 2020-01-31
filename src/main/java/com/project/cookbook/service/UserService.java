@@ -3,6 +3,7 @@ package com.project.cookbook.service;
 import com.project.cookbook.GeneratedModels;
 import com.project.cookbook.converter.UserConverter;
 import com.project.cookbook.exception.UserNotFoundException;
+import com.project.cookbook.exception.WrongPasswordException;
 import com.project.cookbook.model.PrincipalUser;
 import com.project.cookbook.model.User;
 import com.project.cookbook.repository.UserRepository;
@@ -28,7 +29,7 @@ public class UserService {
 
     public GeneratedModels.UsersResponse getTopUsers(int resultSize) {
         List<GeneratedModels.UserSchema> users = userRepository.findAll().stream()
-                .sorted(Comparator.comparingLong(User::getPoints))
+                .sorted(Comparator.comparingLong(User::getPoints).reversed())
                 .map(UserConverter::convert)
                 .limit(resultSize)
                 .collect(Collectors.toList());
@@ -45,11 +46,18 @@ public class UserService {
         return UserConverter.convert(user);
     }
 
-    public void changePassword(PrincipalUser principalUser, String newPassword) {
+    public void changePassword(PrincipalUser principalUser, String newPassword, String oldPassword) {
         User user = principalUser.getUser();
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(encodedPassword);
-        userRepository.saveAndFlush(user);
+        String encodedOld = passwordEncoder.encode(oldPassword);
+        String userPassword = user.getPassword();
+        boolean passwordCorrect = passwordEncoder.matches(oldPassword, user.getPassword());
+        if (passwordCorrect) {
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            user.setPassword(encodedPassword);
+            userRepository.saveAndFlush(user);
+        } else {
+            throw new WrongPasswordException(user);
+        }
     }
 
     public void deleteUserById(PrincipalUser principalUser) {

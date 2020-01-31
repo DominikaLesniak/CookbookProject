@@ -2,6 +2,7 @@ package com.project.cookbook.service;
 
 import com.project.cookbook.GeneratedModels;
 import com.project.cookbook.constants.IngredientType;
+import com.project.cookbook.constants.MealType;
 import com.project.cookbook.constants.PointedActions;
 import com.project.cookbook.converter.RecipeConverter;
 import com.project.cookbook.exception.RecipeNotFoundException;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static java.util.Map.Entry.comparingByKey;
+import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -87,16 +88,13 @@ public class RecipeService {
         }
     }
 
-    public GeneratedModels.RecipeResponse getRecipes(String namePattern,
-                                                     IngredientType mealType,
-                                                     List<GeneratedModels.Ingredient> ingredients,
-                                                     boolean getAllIngredientsMatches) {
+    public GeneratedModels.RecipeResponse getRecipes(GeneratedModels.RecipeFilters recipeFilters) {
         List<Recipe> collect = recipeRepository.findAll()
                 .stream()
-                .filter(filterByName(namePattern))
-                .filter(filterByMealType(mealType))
+                .filter(filterByName(recipeFilters.getNamePattern()))
+                .filter(filterByMealType(recipeFilters.getMealType()))
                 .collect(toList());
-        List<GeneratedModels.RecipeSchema> recipes = filterByIngredients(collect, getSafeList(ingredients), getAllIngredientsMatches);
+        List<GeneratedModels.RecipeSchema> recipes = filterByIngredients(collect, getSafeList(recipeFilters), recipeFilters.getGetAllIngredientsMatches());
         return GeneratedModels.RecipeResponse.newBuilder()
                 .addAllRecipes(recipes)
                 .build();
@@ -113,32 +111,49 @@ public class RecipeService {
     }
 
     private Predicate<Recipe> filterByName(String namePattern) {
-        return recipe -> namePattern == null || recipe.getName().toLowerCase()
+        return recipe -> namePattern.isBlank() || recipe.getName().toLowerCase()
                 .contains(namePattern.toLowerCase());
     }
 
-    private Predicate<Recipe> filterByMealType(IngredientType mealType) {
-        return recipe -> mealType == null || recipe.getIngredients().stream()
+    private Predicate<Recipe> filterByMealType(String mealType) {
+        return recipe -> mealType.isBlank() || recipe.getIngredients().stream()
                 .map(recipeIngredient -> recipeIngredient.getIngredient().getType())
                 .filter(s -> !s.isBlank())
-                .allMatch(ingredientType -> ingredientType.equals(mealType.name()));
+                .map(IngredientType::valueOf)
+                .allMatch(matchMealType(MealType.valueOf(mealType)));
     }
 
     private List<GeneratedModels.RecipeSchema> filterByIngredients(List<Recipe> recipes,
                                                                    List<GeneratedModels.Ingredient> ingredients,
                                                                    boolean getAllIngredientsMatches) {
-        Map<Long, Recipe> sortedRecipes = new HashMap<>();
+        if (ingredients.isEmpty()) {
+            return recipes.stream()
+                    .map(RecipeConverter::convert)
+                    .collect(toList());
+        }
+        Map<Recipe, Long> sortedRecipes = new HashMap<>();
         for (Recipe recipe : recipes) {
             long matches = matchesMapper(recipe, ingredients);
-            sortedRecipes.put(matches, recipe);
+            sortedRecipes.put(recipe, matches);
         }
         return sortedRecipes.entrySet()
                 .stream()
-                .sorted(comparingByKey())
-                .filter(entry -> getAllIngredientsMatches ? entry.getKey().intValue() == ingredients.size() : true)
-                .map(Map.Entry::getValue)
+                .sorted(comparingByValue())
+                .filter(entry -> getAllIngredientsMatches ? entry.getValue().intValue() == ingredients.size() : true)
+                .map(Map.Entry::getKey)
                 .map(RecipeConverter::convert)
                 .collect(toList());
+    }
+
+    private Predicate<IngredientType> matchMealType(MealType mealType) {
+        return ingredientType -> {
+            if (mealType.equals(MealType.REGULAR))
+                return ingredientType.isRegular;
+            else if (mealType.equals(MealType.VEGETARIAN))
+                return ingredientType.isVegetarian;
+            else
+                return ingredientType.isVegan;
+        };
     }
 
     private long matchesMapper(Recipe recipe, List<GeneratedModels.Ingredient> ingredients) {
@@ -154,7 +169,7 @@ public class RecipeService {
                 .anyMatch(ingredient1 -> ingredient.getName().toLowerCase().equals(ingredient1.toLowerCase()));
     }
 
-    private List<GeneratedModels.Ingredient> getSafeList(List<GeneratedModels.Ingredient> ingredients) {
-        return ingredients == null ? Collections.emptyList() : ingredients;
+    private List<GeneratedModels.Ingredient> getSafeList(GeneratedModels.RecipeFilters recipeFilters) {
+        return recipeFilters.getIngredientsList() == null ? Collections.emptyList() : recipeFilters.getIngredientsList();
     }
 }

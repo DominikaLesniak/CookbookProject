@@ -2,7 +2,6 @@ package com.project.cookbook.controller;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.project.cookbook.GeneratedModels;
-import com.project.cookbook.constants.IngredientType;
 import com.project.cookbook.model.PrincipalUser;
 import com.project.cookbook.security.CurrentUserAttribute;
 import com.project.cookbook.service.RecipeService;
@@ -10,8 +9,6 @@ import com.project.cookbook.utils.InOutService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -31,7 +28,6 @@ public class RecipeController {
     }
 
     @GetMapping(value = "/recipe/{id}")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public String getRecipe(@PathVariable long id) {
         GeneratedModels.RecipeSchema recipeSchema = recipeService.getRecipeById(id);
         try {
@@ -61,10 +57,8 @@ public class RecipeController {
     }
 
     @GetMapping(value = "/recipe")
-    public String getFilteredRecipes(String namePattern,
-                                     IngredientType mealType,
-                                     List<GeneratedModels.Ingredient> ingredients,
-                                     boolean getAllIngredientsMatches) throws InvalidProtocolBufferException {
-        return InOutService.write(recipeService.getRecipes(namePattern, mealType, ingredients, getAllIngredientsMatches));
+    public String getFilteredRecipes(@RequestBody String jsonRequest) throws InvalidProtocolBufferException {
+        GeneratedModels.RecipeFilters recipeFilters = InOutService.readMessageForType(jsonRequest, GeneratedModels.RecipeFilters.getDefaultInstance());
+        return InOutService.write(recipeService.getRecipes(recipeFilters));
     }
 }

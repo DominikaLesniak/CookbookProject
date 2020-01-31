@@ -29,8 +29,9 @@ public class UserController {
     @PutMapping(value = "/user/passwordChange")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public void changeUserPassword(@CurrentUserAttribute PrincipalUser principalUser,
-                                   @RequestParam String newPassword) {
-        userService.changePassword(principalUser, newPassword);
+                                   @RequestParam String newPassword,
+                                   @RequestParam String oldPassword) {
+        userService.changePassword(principalUser, newPassword, oldPassword);
     }
 
     @DeleteMapping(value = "/user")

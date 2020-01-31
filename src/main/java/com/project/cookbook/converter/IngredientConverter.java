@@ -10,4 +10,11 @@ public class IngredientConverter {
                 .setType(ingredient.getType())
                 .build();
     }
+
+    public static Ingredient convertBack(GeneratedModels.Ingredient ingredient) {
+        return Ingredient.builder()
+                .name(ingredient.getName())
+                .type(ingredient.getType())
+                .build();
+    }
 }

@@ -16,7 +16,7 @@ public class RatingController {
     private final RatingService ratingService;
 
     @GetMapping("recipe/{recipeId}/rating")
-    @Secured("ROLE_USER")
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String getRatings(@PathVariable long recipeId) {
         try {
             GeneratedModels.RatingsResponse ratingsResponse = ratingService.getRecipeRatings(recipeId);

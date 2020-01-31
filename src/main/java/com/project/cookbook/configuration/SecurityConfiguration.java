@@ -54,7 +54,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -79,7 +78,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js").permitAll()
                 .antMatchers("/authorization/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/ingredient", "/user/**", "/book/**", "**/rating", "/ranking/**", "/recipe**")
+                .antMatchers(HttpMethod.GET, "/ingredient/**", "/user/**", "/book/**", "**/rating", "/ranking/**", "/recipe**")
                 .permitAll()
                 .anyRequest().authenticated();
 
